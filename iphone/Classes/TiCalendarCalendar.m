@@ -287,6 +287,26 @@
     return [[self calendar] title];
 }
 
+-(NSString*)sourceTitle
+{
+    if (![NSThread isMainThread]) {
+        __block id result;
+        TiThreadPerformOnMainThread(^{result = [[self sourceTitle] retain];}, YES);
+        return [result autorelease];
+    }
+    return [[[self calendar] source] title];
+}
+
+-(NSNumber*)sourceType
+{
+    if (![NSThread isMainThread]) {
+        __block id result;
+        TiThreadPerformOnMainThread(^{result = [[self sourceType] retain];}, YES);
+        return [result autorelease];
+    }
+    return @([[[self calendar] source] sourceType]);
+}
+
 
 @end
 
