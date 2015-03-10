@@ -63,6 +63,12 @@ NSString *HTMLTextEncodingNameForStringEncoding(NSStringEncoding encoding)
 @interface LocalProtocolHandler : NSURLProtocol
 @end
  
+
+@interface NSURLRequest (DummyInterface)
+    +(BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
+    +(void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation TiUIWebView
 @synthesize reloadData, reloadDataProperties;
 
@@ -488,7 +494,10 @@ NSString *HTMLTextEncodingNameForStringEncoding(NSStringEncoding encoding)
 		[self loadLocalURL];
 	} else {
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-		[self loadURLRequest:request];
+        //SSL error fix
+        [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+		
+        [self loadURLRequest:request];
 		if (scalingOverride==NO) {
 			[[self webview] setScalesPageToFit:YES];
 		}
