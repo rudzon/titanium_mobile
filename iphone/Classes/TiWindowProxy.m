@@ -515,6 +515,9 @@
 -(void)closeOnUIThread:(NSArray *)args
 {
     if ([self _handleClose:args]) {
+        if ([self _hasListeners:@"willClose"]) {
+            [self fireEvent:@"willClose" withObject:nil withSource:self propagate:NO reportSuccess:NO errorCode:0 message:nil];
+        }
         [self windowWillClose];
         if (isModal) {
             NSDictionary *dict = [args count] > 0 ? [args objectAtIndex:0] : nil;
